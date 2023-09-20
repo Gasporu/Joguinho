@@ -19,6 +19,9 @@ public class Entity {
 	public static BufferedImage CROSSBOW_LEFT = Game.spritesheet.getSprite (112, 80, 16, 16);
 	public static BufferedImage PORTAL_UP = Game.spritesheet.getSprite (96, 112, 16, 16);
 	public static BufferedImage PORTAL_DOWN = Game.spritesheet.getSprite (96, 128, 16, 16);
+	public static BufferedImage CHEST = Game.spritesheet.getSprite (160, 16, 16, 16);
+	public static BufferedImage RING_OF_LIFE = Game.spritesheet.getSprite (192, 0, 16, 16);
+	public static BufferedImage RING_OF_BLOOD = Game.spritesheet.getSprite (208, 0, 16, 16);
 	
 	protected double x;
 	protected double y;

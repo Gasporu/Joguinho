@@ -166,7 +166,7 @@ public class Enemy extends Entity {
 					
 					boolean Damaged = true;	
 					setIsDamaged(Damaged);
-					life--;
+					life -= Game.player.damage;
 					Game.arrows.remove(i);
 					return;
 				

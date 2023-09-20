@@ -27,6 +27,7 @@ public class World {
 	public int cordenadaPortalUpY = 0;
 	public int cordenadaPortalDownX = 0;
 	public int cordenadaPortalDownY = 0;
+
 	
 	public World(String path) {
 		Random random = new Random();
@@ -51,7 +52,7 @@ public class World {
 						
 						int opcaoEscolhida = random.nextInt(numeroChao);
 						if(opcaoEscolhida == 0 || opcaoEscolhida == 1 || opcaoEscolhida == 2)
-						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR1);
+							tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR1);
 						else if(opcaoEscolhida == 3 || opcaoEscolhida == 4)
 							tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR2);
 						else if (opcaoEscolhida == 5)
@@ -60,11 +61,11 @@ public class World {
 					}
 					else if(pixelAtual == 0xFF4CFF00) {
 						// chao (pixel verde claro)
-					tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR3);
+						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR3);
 				    }
 					else if(pixelAtual == 0xFF267F00) {
 						// chao (pixel verde escuro)
-					tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR2);
+						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR2);
 				    }
 					if(pixelAtual == 0xFF808080) {
 						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16,yy*16,Tile.TILE_FLOOR1);
@@ -131,6 +132,14 @@ public class World {
 						cordenadaPortalDownY = yy*16;
 						
 					}
+					if(pixelAtual == 0xFF7A3500) {
+						// bau
+						tiles[xx + (yy * WIDTH)] = new WallTile(xx*16,yy*16,Tile.TILE_INVISIBLE_WALL);
+						Chest chest = new Chest(xx*16,yy*16,16,16,Entity.CHEST,false);
+						Game.entities.add(chest);
+						Chest fakeChest = new Chest(xx*16,yy*16+5,16,16,Entity.CHEST,true);
+						Game.entities.add(fakeChest);
+					}
 					
 				}
 			}
@@ -194,5 +203,6 @@ public class World {
 			}
 		}
 	}
+	
 	
 }

@@ -5,6 +5,7 @@ package com.gaspao.main;
 import javax.swing.JFrame;
 
 import com.gaspao.entities.ArrowShoot;
+import com.gaspao.entities.Chest;
 import com.gaspao.entities.Enemy;
 import com.gaspao.entities.Entity;
 import com.gaspao.entities.Player;
@@ -47,7 +48,7 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 	public static final int SCALE = 4;
 	
 	public int CUR_LEVEL = 0;
-	public int MAX_LEVEL = 1;
+	public int MAX_LEVEL = 2;
 	
 	private BufferedImage image;
 	
@@ -63,6 +64,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 	public static Player player;
 	public int ammoAtual = 0;
 	public double lifeAtual = 0;
+	public double maxLife;
+	public int damagePlayer;
 	public static boolean gun = false;
 	
 	public static Random rand;
@@ -74,7 +77,11 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 	private int framesGameOver = 0;
 	private boolean restartGame = false;
 	
+	private int teste = 0;
+	
 	public Menu menu;
+
+	
 	
 	public Game() {
 		rand = new Random();
@@ -157,29 +164,35 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 			}
 			
 			// mudar de lvl
-			if(enemies.size() == 0) {
+			if(enemies.size() == 0 && teste == 0) {
 				
-				Teleport portalUp = new Teleport(world.cordenadaPortalUpX,world.cordenadaPortalUpY,16,16,Entity.PORTAL_UP);
+				Teleport portalUp = new Teleport(world.cordenadaPortalUpX,world.cordenadaPortalUpY,16,16,Entity.PORTAL_UP, true);
 				Game.entities.add(portalUp);
-				Teleport portalDown = new Teleport(world.cordenadaPortalDownX,world.cordenadaPortalDownY,16,16,Entity.PORTAL_DOWN);
+				Teleport portalDown = new Teleport(world.cordenadaPortalDownX,world.cordenadaPortalDownY,16,16,Entity.PORTAL_DOWN, false);
 				Game.entities.add(portalDown);
-				// aki
-				if (player.portal) {
-					ammoAtual = player.ammo;
-					lifeAtual = player.life;
-					Game.entities.clear();
-					Game.arrows.clear();
-					CUR_LEVEL++;
-					if(CUR_LEVEL > MAX_LEVEL) {
-						CUR_LEVEL = 0;
-					}
-					
-					String newWorld = "level"+CUR_LEVEL+".png";
-					World.restartGame(newWorld);
-					player.ammo = ammoAtual;
-					player.life = lifeAtual;
-					player.hasGun = true;
+				teste++;
 				}
+			// aki
+			if (player.portal) {
+				ammoAtual = player.ammo;
+				lifeAtual = player.life;
+				maxLife = player.maxLife;
+				damagePlayer = player.damage;
+				Game.entities.clear();
+				Game.arrows.clear();
+				CUR_LEVEL++;
+				if(CUR_LEVEL > MAX_LEVEL) {
+					CUR_LEVEL = 0;
+				}
+				teste = 0;
+				String newWorld = "level"+CUR_LEVEL+".png";
+				World.restartGame(newWorld);
+				player.ammo = ammoAtual;
+				player.life = lifeAtual;
+				player.maxLife = maxLife;
+				player.damage = damagePlayer;
+				player.hasGun = true;
+				Chest.open = false;
 			}
 		} else if (gameState == "GAME_OVER") {
 			this.framesGameOver++;

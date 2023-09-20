@@ -38,6 +38,8 @@ public class Player extends Entity {
 	public boolean shoot = false;
 	
 	public double life = 100, maxLife = 100;
+	public int damage = 1;
+	
 	public int mx = 0,my =0;
 	public double angleX, angleY;
 	public double angleXX, angleYY;
@@ -74,7 +76,7 @@ public class Player extends Entity {
 			
 			x-=speed;
 		}
-		if (up&& World.isFree(this.getX(),(int)(y-speed))) {
+		if (up && World.isFree(this.getX(),(int)(y-speed))) {
 			moved = true;
 			y-=speed;
 		}
@@ -102,6 +104,9 @@ public class Player extends Entity {
 		checkCollisionLifePack();
 		checkCollisionAmmo();
 		checkCollisionGun();
+		checkCollisionChest();
+		checkCollisionRingOfLife();
+		checkCollisionRingOfBlood();
 		checkCollisionTeleport();
 		
 		if(isDamaged) {
@@ -195,9 +200,49 @@ public class Player extends Entity {
 			if(atual instanceof Lifepack) {
 				if(Entity.isColidding(this, atual)) {
 					life+=32;
-					if (life > 100)
-						life = 100;
+					if (life > maxLife)
+						life = maxLife;
 					Game.entities.remove(atual);
+				}
+			}
+		}
+	}
+	public void checkCollisionChest() {
+		
+		for(int i = 0; i<Game.entities.size(); i++) {
+			Entity atual = Game.entities.get(i);
+			if(atual instanceof Chest) {
+				if(Entity.isColidding(this, atual)) {
+					Chest.open = true;
+					
+				}
+			}
+		}
+	}
+	public void checkCollisionRingOfLife() {
+		
+		for(int i = 0; i<Game.entities.size(); i++) {
+			Entity atual = Game.entities.get(i);
+			if(atual instanceof Ring_Life) {
+				if(Entity.isColidding(this, atual)) {
+					Game.entities.remove(atual);
+					maxLife += 15;
+					life+=15;
+					if (life > maxLife)
+						life = maxLife;
+					
+				}
+			}
+		}
+	}
+	public void checkCollisionRingOfBlood() {
+		
+		for(int i = 0; i<Game.entities.size(); i++) {
+			Entity atual = Game.entities.get(i);
+			if(atual instanceof Ring_Blood) {
+				if(Entity.isColidding(this, atual)) {
+					Game.entities.remove(atual);
+					damage += 2;
 				}
 			}
 		}
