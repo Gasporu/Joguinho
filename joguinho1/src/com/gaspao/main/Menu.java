@@ -37,7 +37,7 @@ public class Menu {
 		}
 		if (enter) {
 			if(options[currentOption] == "Novo jogo" || options[currentOption] == "continuar" ) {
-				Game.gameState = "NORMAL";
+				Game.gameState = "CHARACTER_CREATION";
 				pause = false;
 				enter = false;
 			}else if(options[currentOption] == "Sair") {

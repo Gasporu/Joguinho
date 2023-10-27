@@ -87,6 +87,37 @@ public class Entity {
 	public int getHeight() {
 		return height;
 	}
+	public int getMaskx() {
+		return maskx;
+	}
+
+	public void setMaskx(int maskx) {
+		this.maskx = maskx;
+	}
+
+	public int getMasky() {
+		return masky;
+	}
+
+	public void setMasky(int masky) {
+		this.masky = masky;
+	}
+
+	public int getMwidth() {
+		return mwidth;
+	}
+
+	public void setMwidth(int mwidth) {
+		this.mwidth = mwidth;
+	}
+
+	public int getMheight() {
+		return mheight;
+	}
+
+	public void setMheight(int mheight) {
+		this.mheight = mheight;
+	}
 	
 	public void tick() {
 		
@@ -108,7 +139,6 @@ public class Entity {
 		g.drawImage(sprite,this.getX() - Camera.x ,this.getY() - Camera.y, null);
 		//g.setColor(Color.red);
 		//g.fillRect(this.getX() + maskx - Camera.x,this.getY() + masky - Camera.y, mwidth, height);
-	}
-	
+	}	
  	
 }

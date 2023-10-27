@@ -58,6 +58,7 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 	public static List<ArrowShoot> arrows;
 	public static Spritesheet spritesheet;
 	public static Spritesheet menuImage;
+	public static Spritesheet backGroundImage;
 	
 	public static World world;
 	
@@ -80,7 +81,9 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 	private int teste = 0;
 	
 	public Menu menu;
-
+	public CharacterCreation characterCreation;
+	private int armorColor;
+	private int capeColor;
 	
 	
 	public Game() {
@@ -97,6 +100,7 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		menuImage = new Spritesheet("/menuImage.png");
+		backGroundImage = new Spritesheet("/backGroundImage.png");
 		
 		player = new Player(0,0,16,16,spritesheet.getSprite(32,0,16,16));
 		entities.add(player);
@@ -104,6 +108,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 		world = new World("/level0.png");
 		
 		menu = new Menu();
+		
+		characterCreation = new CharacterCreation();
 		
 		addKeyListener(this);
 		addMouseMotionListener(this);
@@ -172,12 +178,14 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 				Game.entities.add(portalDown);
 				teste++;
 				}
-			// aki
+			
 			if (player.portal) {
 				ammoAtual = player.ammo;
 				lifeAtual = player.life;
 				maxLife = player.maxLife;
 				damagePlayer = player.damage;
+				armorColor = player.colorArmor;
+				capeColor = player.colorCape;
 				Game.entities.clear();
 				Game.arrows.clear();
 				CUR_LEVEL++;
@@ -189,6 +197,10 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 				World.restartGame(newWorld);
 				player.ammo = ammoAtual;
 				player.life = lifeAtual;
+				
+				player.colorArmor = armorColor;
+				player.colorCape = capeColor;
+				
 				player.maxLife = maxLife;
 				player.damage = damagePlayer;
 				player.hasGun = true;
@@ -209,12 +221,25 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 				this.gameState = "NORMAL";
 				CUR_LEVEL = 0;
 				String newWorld = "level"+CUR_LEVEL+".png";
+				
+				Game.entities.clear();
+				Game.arrows.clear();
+				
+				armorColor = player.colorArmor;
+				capeColor = player.colorCape;
+				
 				World.restartGame(newWorld);
+				
+				player.colorArmor = armorColor;
+				player.colorCape = capeColor;
 				
 			}
 		} else if(gameState == "MENU") {
 			// menuzinho dos gu
 			menu.tick();
+		} else if(gameState == "CHARACTER_CREATION") {
+			// criação de personagem
+			characterCreation.tick();
 		}
 		
 
@@ -266,6 +291,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 				g.drawString("Pressione Enter para reiniciar",(WIDTH*SCALE)/2-200, (HEIGHT*SCALE)/2+40);
 		}else if(gameState == "MENU") {
 			menu.render(g);
+		}else if(gameState == "CHARACTER_CREATION") {
+			characterCreation.render(g);
 		}
 		bs.show();
 	}
@@ -310,10 +337,20 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			// direita
 			player.right = true;
+			
+			if(gameState == "CHARACTER_CREATION") {
+				characterCreation.right = true;
+			}
+			
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			// esquerda
 			player.left = true;
+			
+			if(gameState == "CHARACTER_CREATION") {
+				characterCreation.left = true;
+			}
+			
 		}
 		
 		//
@@ -323,6 +360,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 			player.up = true;
 			if(gameState == "MENU") {
 				menu.up = true;
+			}if(gameState == "CHARACTER_CREATION") {
+				characterCreation.up = true;
 			}
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
@@ -331,6 +370,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 			
 			if(gameState == "MENU") {
 				menu.down = true;
+			}if(gameState == "CHARACTER_CREATION") {
+				characterCreation.down = true;
 			}
 			
 		}
@@ -339,6 +380,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 			this.restartGame = true;
 			if(gameState == "MENU") {
 				menu.enter = true;
+			}if(gameState == "CHARACTER_CREATION") {
+				characterCreation.enter = true;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -353,10 +396,20 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			// direita
 			player.right = false;
+			
+			if(gameState == "CHARACTER_CREATION") {
+				characterCreation.right = false;
+			}
+			
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			// esquerda
 			player.left = false;
+			
+			if(gameState == "CHARACTER_CREATION") {
+				characterCreation.left = false;
+			}
+			
 		}
 		
 		//
@@ -373,6 +426,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener, 
 			this.restartGame = false;
 			if(gameState == "MENU") {
 				menu.enter = false;
+			}if(gameState == "CHARACTER_CREATION") {
+				characterCreation.enter = false;
 			}
 		}
 

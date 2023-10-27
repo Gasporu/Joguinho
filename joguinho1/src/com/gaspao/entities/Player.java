@@ -1,10 +1,11 @@
 package com.gaspao.entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
+import java.awt.Rectangle;
 import com.gaspao.graficos.Spritesheet;
 import com.gaspao.main.Game;
 import com.gaspao.world.Camera;
@@ -17,10 +18,25 @@ public class Player extends Entity {
 	public int dir = right_dir;
 	public double speed = 1.4;
 	
-	private int frames = 0, maxFrames = 5,index = 0, maxIndex = 3;
+	private int maskxRight = 4, maskxLeft = 3, masky = 4, maskw = 10, maskh = 10;
+	
+	private int frames = 0, maxFrames = 8,index = 0, maxIndex = 3;
 	private boolean moved = false;
-	private BufferedImage[] rightPlayer;
-	private BufferedImage[] leftPlayer;
+	
+	private BufferedImage[][] rightPlayer;
+	private BufferedImage[][] leftPlayer;
+	
+	private BufferedImage[][] rightPlayerCape;
+	private BufferedImage[][] leftPlayerCape;
+	
+	
+	
+	private int lado = 1;
+	
+	public int colorArmor = 0;
+	public int colorCape = 0;
+	public int maxBodyNumber = 3;
+	public int maxCapeNumber = 3;
 	
 	private BufferedImage playerDamageRight;
 	private BufferedImage playerDamageLeft;
@@ -48,39 +64,47 @@ public class Player extends Entity {
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		
-		rightPlayer = new BufferedImage[4];
-		leftPlayer = new BufferedImage[4];
+		rightPlayer = new BufferedImage[4][4];
+		leftPlayer = new BufferedImage[4][4];
+		
+		rightPlayerCape = new BufferedImage[4][4];
+		leftPlayerCape = new BufferedImage[4][4];
 	
 		playerDamageRight = Game.spritesheet.getSprite(32, 32, 16, 16);
 		playerDamageLeft = Game.spritesheet.getSprite(48, 32, 16, 16);
 		
-		for(int i=0 ; i<4 ; i++) {
-			rightPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 0, 16, 16);
+		for(int j=0; j<4; j++) {
+			for(int i=0 ; i<4 ; i++) {
+				rightPlayer[i][j] = Game.spritesheet.getSprite(256 + (i*16), 0 + (j*32), 16, 16);
+				rightPlayerCape[i][j] = Game.spritesheet.getSprite(256 + (i*16), 128 + (j*32), 16, 16);
+			}
 		}
-		
-		for(int i=0 ; i<4 ; i++) {
-			leftPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 16, 16, 16);
+		for(int j=0; j<4; j++) {
+			for(int i=0 ; i<4 ; i++) {
+				leftPlayer[i][j] = Game.spritesheet.getSprite(256 + (i*16), 16 + (j*32), 16, 16);
+				leftPlayerCape[i][j] = Game.spritesheet.getSprite(256 + (i*16), 144 + (j*32), 16, 16);
+			}
 		}
 		
 	}
 
 	public void tick() {
 		moved = false;
-		if(right && World.isFree((int)(x+speed),this.getY())) {
+		if(right && World.isFree((int)(x+speed),this.getY())  && !isColidding((int)(x+speed), this.getY()) ) {
 			moved = true;
 			
 			x+=speed;
 		}
-		else if(left && World.isFree((int)(x-speed),this.getY())) {
+		else if(left && World.isFree((int)(x-speed),this.getY())  && !isColidding((int)(x-speed), this.getY()) ) {
 			moved = true;
 			
 			x-=speed;
 		}
-		if (up && World.isFree(this.getX(),(int)(y-speed))) {
+		if (up && World.isFree(this.getX(),(int)(y-speed)) && !isColidding(this.getX(), (int)(y-speed)) ) {
 			moved = true;
 			y-=speed;
 		}
-		else if (down&& World.isFree(this.getX(),(int)(y+speed))) {
+		else if (down&& World.isFree(this.getX(),(int)(y+speed)) && !isColidding(this.getX(), (int)(y+speed)) ) {
 			moved = true;
 			y+=speed;
 		}
@@ -209,6 +233,8 @@ public class Player extends Entity {
 	}
 	public void checkCollisionChest() {
 		
+		
+		
 		for(int i = 0; i<Game.entities.size(); i++) {
 			Entity atual = Game.entities.get(i);
 			if(atual instanceof Chest) {
@@ -261,10 +287,42 @@ public class Player extends Entity {
 		}		
 	}
 	
+	public boolean isColidding(int xnext, int ynext) {
+		
+		
+		Rectangle playerColisionRight = new Rectangle(xnext+maskxRight,ynext+masky,maskw,maskh);
+		Rectangle playerColisionLeft = new Rectangle(xnext+maskxLeft,ynext+masky,maskw,maskh);
+		
+		for(int i=0; i<Game.entities.size(); i++) {
+			Entity atual = Game.entities.get(i);
+			if(atual == this)
+				continue;
+			if(atual instanceof Enemy) {
+				continue;
+			}
+			Rectangle targetEntity = new Rectangle(atual.getX()+getMaskx(),atual.getY()+getMasky(),16,16);
+			if(lado == 1) {
+				if(playerColisionRight.intersects(targetEntity)) {
+					
+					return true;
+				}
+			}
+			if(lado == 0) {
+				if(playerColisionLeft.intersects(targetEntity)) {
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	
 	public void render(Graphics g) {
 		
-		int lado = 1;
+
 		
 		if(Game.gameState == "GAME_OVER") {
 			if (lado == 1)
@@ -276,22 +334,41 @@ public class Player extends Entity {
 		else if (!isDamaged) {
 			
 			
-			if (angleXX >= 0) {
-				g.drawImage(rightPlayer[index],this.getX() - Camera.x,this.getY() - Camera.y, null);
-				lado = 1;
-			}
-			else if(angleXX < 0) {
-				g.drawImage(leftPlayer[index],this.getX()- Camera.x,this.getY()- Camera.y, null);
-				lado = 0;
-			}
+				if (angleXX >= 0) {
+					g.drawImage(rightPlayer[index][colorArmor],this.getX() - Camera.x,this.getY() - Camera.y, null);
+					g.drawImage(rightPlayerCape[index][colorCape],this.getX() - Camera.x,this.getY() - Camera.y, null);
+					lado = 1;
+				
+					//g.setColor(Color.blue);
+					//g.fillRect(this.getX() + maskxRight - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
+				
+				}
+				else if(angleXX < 0) {
+					g.drawImage(leftPlayer[index][colorArmor],this.getX()- Camera.x,this.getY()- Camera.y, null);
+					g.drawImage(leftPlayerCape[index][colorCape],this.getX()- Camera.x,this.getY()- Camera.y, null);
+					lado = 0;	
+				
+					//g.setColor(Color.blue);
+					//g.fillRect(this.getX() + maskxLeft - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
+				}
+			
+			
 		} else {
-			if (angleXX >= 0) {
+			if (angleXX >= 0) {				
 				g.drawImage(playerDamageRight,this.getX() - Camera.x,this.getY() - Camera.y, null);
 				lado = 1;
+				
+				//g.setColor(Color.blue);
+				//g.fillRect(this.getX() + maskxRight - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
+				
 			}
-			else if(angleXX < 0) {
+			else if(angleXX < 0) {				
 				g.drawImage(playerDamageLeft,this.getX()- Camera.x,this.getY()- Camera.y, null);
 				lado = 0;
+				
+				//g.setColor(Color.blue);
+				//g.fillRect(this.getX() + maskxLeft - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
+				
 			}	
 		}
 		if (hasGun && Game.gameState != "GAME_OVER") {

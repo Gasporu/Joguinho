@@ -134,11 +134,9 @@ public class World {
 					}
 					if(pixelAtual == 0xFF7A3500) {
 						// bau
-						tiles[xx + (yy * WIDTH)] = new WallTile(xx*16,yy*16,Tile.TILE_INVISIBLE_WALL);
-						Chest chest = new Chest(xx*16,yy*16,16,16,Entity.CHEST,false);
+						Chest chest = new Chest(xx*16,yy*16,16,16,Entity.CHEST);
 						Game.entities.add(chest);
-						Chest fakeChest = new Chest(xx*16,yy*16+5,16,16,Entity.CHEST,true);
-						Game.entities.add(fakeChest);
+						
 					}
 					
 				}

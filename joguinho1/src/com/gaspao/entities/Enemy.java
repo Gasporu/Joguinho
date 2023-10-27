@@ -87,6 +87,9 @@ public class Enemy extends Entity {
 			}
 		} else {
 			// ta colidindo com player
+			
+			
+			
 			if(Game.rand.nextInt(100) < 10) {
 				dandoDano();
 				
