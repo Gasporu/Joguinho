@@ -13,7 +13,7 @@ public class KingSlime extends Enemy {
 
 	private int maskx = -36, masky = -28, maskw = 38, maskh = 38;
 	
-	private double speed = 0.5;
+	private double speed = 0.6;
 	
 	private BufferedImage[] spritesRightSlimeKing;
 	private BufferedImage[] spritesLeftSlimeKing;
