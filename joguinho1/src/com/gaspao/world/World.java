@@ -96,12 +96,22 @@ public class World {
 							Game.entities.add(bat);
 							Game.enemies.add(bat);
 						}
-
+						
+					}
+					else if(pixelAtual == 0xFF00FF21) {
+						MegaSlime MegaSlime = new MegaSlime(xx*16,yy*16,16,16,Entity.MEGASLIME_EN);
+						Game.entities.add(MegaSlime);
+						Game.enemies.add(MegaSlime);
 					}
 					else if(pixelAtual == 0xFFB200FF) {
 						Bat bat = new Bat(xx*16,yy*16,16,16,Entity.BAT_EN);
 						Game.entities.add(bat);
 						Game.enemies.add(bat);
+					}
+					else if(pixelAtual == 0xFF9E0000) {
+						KingSlime KingSlime = new KingSlime(xx*16,yy*16,16,16,Entity.KINGSLIME_EN);
+						Game.entities.add(KingSlime);
+						Game.enemies.add(KingSlime);
 					}
 					else if(pixelAtual == 0xFFFF6A00) {
 						// Crossbow

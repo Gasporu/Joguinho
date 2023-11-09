@@ -16,15 +16,21 @@ public class Enemy extends Entity {
 	
 	
 
-	private int maskx = 5, masky = 7, maskw = 9, maskh = 9;
+	private int maskx = 4, masky = 6, maskw = 9, maskh = 9;
 	
 	public int right_dir = 0, left_dir = 1; 
 	public int dir = right_dir;
+	
+	public boolean dyingAnimation = false;
+	public boolean die = false;
+	public int dyingAnimationIdex = 0;
 	
 	private int frames = 0;
 	private int maxFrames = 18;
 	private int index = 0;
 	private int maxIndex = 3;
+	
+	
 	
 	private boolean isDamaged = false;
 	private int damageFrames = 8, damageCurrent = 0;
@@ -37,7 +43,7 @@ public class Enemy extends Entity {
 	private BufferedImage DamagedRight;
 	private BufferedImage DamagedLeft;
 	
-	private int life = 3;
+	private int life = 15;
 	
 	protected int dano = 4;
 	
@@ -63,9 +69,43 @@ public class Enemy extends Entity {
 	public void tick() {
 		
 		if(isColiddingWithPlayer() == false) {
-				
 			
+			moving();
+			
+		} else if (isColiddingWithPlayer() == true) {
+			// ta colidindo com player
+			
+			if(Game.rand.nextInt(100) < 25) {
+				dandoDano();
+				
+				
+			}
+			
+		}
 		
+		tickAnimation();
+		
+			
+		collidingBullet();
+		
+				
+		if(getLife()<=0) {
+			selfDestroy();
+			return;
+		}	
+		if (isDamaged()) {
+			this.damageCurrent++;
+			if(this.damageCurrent == this.damageFrames) {
+				this.damageCurrent = 0;
+				boolean Damaged = false;	
+				setIsDamaged(Damaged);
+			}
+		}
+				
+	}
+	
+	public void moving() {
+		if(!dyingAnimation) {
 			if(x<Game.player.getX() && World.isFree((int)(x+getSpeed()), this.getY())
 					&& !isColidding((int)(x+getSpeed()), this.getY())) {
 				dir = right_dir;
@@ -85,42 +125,45 @@ public class Enemy extends Entity {
 					&& !isColidding(this.getX(),(int)(y-getSpeed()))) {
 				y-=getSpeed();
 			}
-		} else {
-			// ta colidindo com player
-			
-			
-			
-			if(Game.rand.nextInt(100) < 10) {
-				dandoDano();
-				
-				
-			}
-			
 		}
-		
-		tickAnimation();
-		
-			
-		collidingBullet();
-		
-				
-		if(life <=0) {
-			selfDestroy();
-			return;
-		}	
-		if (isDamaged()) {
-			this.damageCurrent++;
-			if(this.damageCurrent == this.damageFrames) {
-				this.damageCurrent = 0;
-				boolean Damaged = false;	
-				setIsDamaged(Damaged);
-			}
-		}
-				
 	}
 	
-	
-	
+	public int getMaskx() {
+		return maskx;
+	}
+
+	public void setMaskx(int maskx) {
+		this.maskx = maskx;
+	}
+	public void setMaskxa(int maskx) {
+		
+		this.maskx = maskx;
+	}
+
+	public int getMasky() {
+		return masky;
+	}
+
+	public void setMasky(int masky) {
+		this.masky = masky;
+	}
+
+	public int getMaskw() {
+		return maskw;
+	}
+
+	public void setMaskw(int maskw) {
+		this.maskw = maskw;
+	}
+
+	public int getMaskh() {
+		return maskh;
+	}
+
+	public void setMaskh(int maskh) {
+		this.maskh = maskh;
+	}
+
 	public void setIsDamaged(boolean Damaged) {
 		this.isDamaged = Damaged;
 	}
@@ -145,6 +188,9 @@ public class Enemy extends Entity {
 	
 	
 	public void selfDestroy() {
+		
+		dyingAnimation = true;
+		
 		Game.entities.remove(this);
 		Game.enemies.remove(this);
 		
@@ -157,19 +203,23 @@ public class Enemy extends Entity {
 			Game.entities.add(new Arrow((int)x,(int)y,16,16,Entity.ARROW_EN));
 		}
 		else {
-			// nada
+			// dropa nada
 		}
 	}
 	
 	public void collidingBullet() {
+		
+		Rectangle enemyCurrent = new Rectangle(this.getX()+getMaskx(),this.getY()+getMasky(),getMaskw(),getMaskh());
+		
+		
 		for(int i=0; i<Game.arrows.size(); i++) {
-			Entity e = Game.arrows.get(i);			
-				if(Entity.isColidding(this, e)) {
-					
+			Entity e = Game.arrows.get(i);
+			Rectangle arrow = new Rectangle(e.getX()+e.getMaskx(),e.getY()+e.getMasky(),e.getWidth(),e.getHeight());
+				if(enemyCurrent.intersects(arrow)) {
 					
 					boolean Damaged = true;	
 					setIsDamaged(Damaged);
-					life -= Game.player.damage;
+					setLife(getLife() - Game.player.damage);
 					Game.arrows.remove(i);
 					return;
 				
@@ -184,15 +234,19 @@ public class Enemy extends Entity {
 	}
 
 	public double dandoDano() {
-		Game.player.life=Game.player.life-this.dano;
+		Game.player.life=Game.player.life-getDano();
 		Game.player.isDamaged = true;
 		return Game.player.life;
+	}
+	
+	public int getDano() {
+		return dano;
 	}
 	
 	
 	public boolean isColiddingWithPlayer() {
 		
-		Rectangle enemyCurrent = new Rectangle(this.getX()+maskx,this.getY()+masky,maskw,maskh);
+		Rectangle enemyCurrent = new Rectangle(this.getX()+getMaskx(),this.getY()+getMasky(),getMaskw(),getMaskh());
 		Rectangle player = new Rectangle(Game.player.getX(),Game.player.getY(),16,16);
 		
 		return enemyCurrent.intersects(player);
@@ -201,15 +255,14 @@ public class Enemy extends Entity {
 	
 	public boolean isColidding(int xnext, int ynext) {
 		
-		Rectangle enemyCurrent = new Rectangle(xnext+maskx,ynext+masky,maskw,maskh);
+		Rectangle enemyCurrent = new Rectangle(xnext+getMaskx(),ynext+getMasky(),getMaskw(),getMaskh());
 		
 		for(int i=0; i<Game.enemies.size(); i++) {
 			Enemy e = Game.enemies.get(i);
 			if(e == this)
 				continue;
-			Rectangle targetEnemy = new Rectangle(e.getX()+maskx,e.getY()+masky,maskw,maskh);
+			Rectangle targetEnemy = new Rectangle(e.getX()+e.getMaskx(),e.getY()+e.getMasky(),e.getMaskw(),e.getMaskh());
 			if(enemyCurrent.intersects(targetEnemy)) {
-				
 				return true;
 			}
 		}
@@ -238,6 +291,14 @@ public class Enemy extends Entity {
 		
 		//g.setColor(Color.blue);
 		//g.fillRect(this.getX() + maskx - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
+	}
+
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
 	}
 	
 	

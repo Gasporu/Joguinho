@@ -22,6 +22,8 @@ public class Entity {
 	public static BufferedImage CHEST = Game.spritesheet.getSprite (160, 16, 16, 16);
 	public static BufferedImage RING_OF_LIFE = Game.spritesheet.getSprite (192, 0, 16, 16);
 	public static BufferedImage RING_OF_BLOOD = Game.spritesheet.getSprite (208, 0, 16, 16);
+	public static BufferedImage KINGSLIME_EN = Game.spritesheet.getSprite(128, 208, 16, 16);
+	public static BufferedImage MEGASLIME_EN = Game.spritesheet.getSprite(128, 0, 16, 16);
 	
 	protected double x;
 	protected double y;
@@ -126,8 +128,9 @@ public class Entity {
 	
 	public static boolean isColidding(Entity e1,Entity e2) {
 		
-		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx ,e1.getY() + e1.masky ,e1.mwidth,e1.mheight);
-		Rectangle e2Mask = new Rectangle(e2.getX() + e2.maskx, e2.getY() + e2.masky, e2.mwidth, e2.mheight);
+		Rectangle e1Mask = new Rectangle(e1.getX() + e1.getMaskx() ,e1.getY() + e1.getMasky(), e1.getWidth(), e1.getHeight());
+		
+		Rectangle e2Mask = new Rectangle(e2.getX() + e2.getMaskx(), e2.getY() + e2.getMasky(), e2.getWidth(), e2.getHeight());
 		
 		return e1Mask.intersects(e2Mask);
 	}

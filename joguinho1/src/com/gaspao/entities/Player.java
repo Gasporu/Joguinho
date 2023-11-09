@@ -54,7 +54,7 @@ public class Player extends Entity {
 	public boolean shoot = false;
 	
 	public double life = 100, maxLife = 100;
-	public int damage = 1;
+	public int damage = 5;
 	
 	public int mx = 0,my =0;
 	public double angleX, angleY;
@@ -175,8 +175,9 @@ public class Player extends Entity {
 		
 		if (life <= 0) {
 			// GAME OVER
-			life = 0;
+			
 			Game.gameState = "GAME_OVER";
+			life = 0;
 		}
 		
 		updateCamera();
@@ -268,7 +269,7 @@ public class Player extends Entity {
 			if(atual instanceof Ring_Blood) {
 				if(Entity.isColidding(this, atual)) {
 					Game.entities.remove(atual);
-					damage += 2;
+					damage += 5;
 				}
 			}
 		}

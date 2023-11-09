@@ -6,16 +6,15 @@ import java.awt.image.BufferedImage;
 
 import com.gaspao.main.Game;
 import com.gaspao.world.Camera;
-import com.gaspao.world.World;
 
-public class Bat extends Enemy {
+public class MegaSlime extends Enemy {
 
-	private double speed = 0.9;
+private double speed = 0.9;
 	
 	
-	private BufferedImage[] spritesRightBat;
-	private BufferedImage[] spritesLeftBat;
-	
+	private BufferedImage[] spritesRight;
+	private BufferedImage[] spritesLeft;
+
 	private BufferedImage DamagedRight;
 	private BufferedImage DamagedLeft;
 	
@@ -26,29 +25,27 @@ public class Bat extends Enemy {
 	private int index = 0;
 	private int maxIndex = 3;
 	
-	private int maskx = 5, masky = 5, maskw = 6, maskh = 8;
+	private int maskx = 8, masky = 12, maskw = 18, maskh = 18;
 	
-	private int life = 10;
-	private int dano = 2; 
+	private int life = 50;
+	private int dano = 8; 
 
-	public Bat(int x, int y, int width, int height, BufferedImage sprite) {
+	public MegaSlime(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		
-		DamagedRight = Game.spritesheet.getSprite(128, 144, 16, 16);
-		DamagedLeft = Game.spritesheet.getSprite(144, 144, 16, 16);
+		DamagedRight = Game.spritesheet.getSprite(128, 64, 16, 16);
+		DamagedLeft = Game.spritesheet.getSprite(144, 64, 16, 16);
 		
-		spritesRightBat = new BufferedImage[4];
-		spritesRightBat[0] = Game.spritesheet.getSprite(128, 80, 16, 16);
-		spritesRightBat[1] = Game.spritesheet.getSprite(128, 96, 16, 16);
-		spritesRightBat[2] = Game.spritesheet.getSprite(128, 112, 16, 16);
-		spritesRightBat[3] = Game.spritesheet.getSprite(128, 128, 16, 16);
-		
-		spritesLeftBat = new BufferedImage[4];
-		spritesLeftBat[0] = Game.spritesheet.getSprite(144, 80, 16, 16);
-		spritesLeftBat[1] = Game.spritesheet.getSprite(144, 96, 16, 16);
-		spritesLeftBat[2] = Game.spritesheet.getSprite(144, 112, 16, 16);
-		spritesLeftBat[3] = Game.spritesheet.getSprite(144, 128, 16, 16);
-		
+		spritesRight = new BufferedImage[4];
+		spritesRight[0] = Game.spritesheet.getSprite(128, 0, 16, 16);
+		spritesRight[1] = Game.spritesheet.getSprite(128, 16, 16, 16);
+		spritesRight[2] = Game.spritesheet.getSprite(128, 32, 16, 16);
+		spritesRight[3] = Game.spritesheet.getSprite(128, 48, 16, 16);
+		spritesLeft = new BufferedImage[4];
+		spritesLeft[0] = Game.spritesheet.getSprite(144, 0, 16, 16);
+		spritesLeft[1] = Game.spritesheet.getSprite(144, 16, 16, 16);
+		spritesLeft[2] = Game.spritesheet.getSprite(144, 32, 16, 16);
+		spritesLeft[3] = Game.spritesheet.getSprite(144, 48, 16, 16);
 		
 	}
 
@@ -91,25 +88,24 @@ public class Bat extends Enemy {
 	}
 	
 	
-public void render(Graphics g) {
+	public void render(Graphics g) {
 		
-		if(!isDamaged()) {
+		if (!isDamaged()) {
 			if (dir == right_dir) {
-				g.drawImage(spritesRightBat[index],this.getX() - Camera.x,this.getY() - Camera.y,null);
+				g.drawImage(spritesRight[index],this.getX() - Camera.x,this.getY() - Camera.y,32,32,null);
 			}
 			else if(dir == left_dir) {
-				g.drawImage(spritesLeftBat[index],this.getX() - Camera.x,this.getY() - Camera.y,null);
+				g.drawImage(spritesLeft[index],this.getX() - Camera.x,this.getY() - Camera.y,32,32,null);
 			}
 		}
 		else {
 			if (dir == right_dir) {
-				g.drawImage(DamagedRight,this.getX() - Camera.x,this.getY() - Camera.y,null);
+				g.drawImage(DamagedRight,this.getX() - Camera.x,this.getY() - Camera.y,32,32,null);
 			}
 			else if(dir == left_dir) {
-				g.drawImage(DamagedLeft,this.getX() - Camera.x,this.getY() - Camera.y,null);
+				g.drawImage(DamagedLeft,this.getX() - Camera.x,this.getY() - Camera.y,32,32,null);
 			}
 		}
-		
 		
 		//g.setColor(Color.blue);
 		//g.fillRect(this.getX() + maskx - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);

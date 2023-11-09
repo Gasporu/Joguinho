@@ -21,6 +21,7 @@ public class ArrowShoot extends Entity {
 	private int testArrow = 0;
 	private int testArrow2 = 0;
 	
+	private int maskx = 5, masky = 7, maskw = 9, maskh = 9;
 	
 	private BufferedImage rightArrow;
 	private BufferedImage leftArrow;
@@ -168,6 +169,40 @@ public class ArrowShoot extends Entity {
 		//g.fillOval(this.getX() - Camera.x, this.getY() - Camera.y, width, height);
 		
 	}
+	
+	
+		public int getMaskx() {
+		return maskx;
+		}
+
+		public void setMaskx(int maskx) {
+		this.maskx = maskx;
+		}
+
+		public int getMasky() {
+		return masky;
+		}
+
+		public void setMasky(int masky) {
+		this.masky = masky;
+		}
+
+		public int getMaskw() {
+		return maskw;
+		}
+
+		public void setMaskw(int maskw) {
+		this.maskw = maskw;
+		}
+
+		public int getMaskh() {
+		return maskh;
+		}
+
+		public void setMaskh(int maskh) {
+		this.maskh = maskh;
+		}
+	
 	
 	
 }
