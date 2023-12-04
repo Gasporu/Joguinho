@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import com.gaspao.main.Game;
 import com.gaspao.world.Camera;
 
-public class MegaSlime extends Enemy {
+public class MegaSlime extends Slime {
 
 private double speed = 0.9;
 	

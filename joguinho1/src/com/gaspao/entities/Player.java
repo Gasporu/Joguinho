@@ -1,6 +1,7 @@
 package com.gaspao.entities;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -42,6 +43,15 @@ public class Player extends Entity {
 	private BufferedImage playerDamageLeft;
 	
 	public boolean hasGun = false;
+	public boolean reloading = false;
+	
+	private int reloadingCount = 0;
+	private int reloadingMaxCount = 15;
+	private int reloadingAnimationIdex = 0;
+	private int reloadingMaxAnimationIdex = 5;
+	
+	private double reloagindBar = 1;
+	private double reloagindMaxBar = (reloadingMaxCount*reloadingMaxAnimationIdex) ;
 	
 	public double angle = 0;
 	
@@ -141,10 +151,14 @@ public class Player extends Entity {
 			}
 		}
 		
+		if(reloading) {
+			reloading();
+		}
+		
 		if (shoot) {			
 			
 			shoot = false;
-			if (hasGun && ammo > 0){
+			if (hasGun && ammo > 0 && !reloading){
 				
 				ammo --;
 				//cria bala e atira	
@@ -166,8 +180,10 @@ public class Player extends Entity {
 				
 				ArrowShoot arrow = new ArrowShoot(this.getX() + px,this.getY() + py,5,5,null,dx,dy);
 				Game.arrows.add(arrow);
+				reloading = true;
 				
-			}
+			}  
+			
 			
 			
 		}
@@ -181,6 +197,22 @@ public class Player extends Entity {
 		}
 		
 		updateCamera();
+	}
+	
+	public void reloading() {
+		reloadingCount++;
+		reloagindBar++;
+		
+		if(reloadingCount == reloadingMaxCount) {
+			reloadingCount = 0;
+			reloadingAnimationIdex++;
+			if(reloadingAnimationIdex > reloadingMaxAnimationIdex) {
+				reloadingAnimationIdex = 0;
+				reloading = false;
+				reloagindBar = 1;
+			}
+				
+		}
 	}
 	
 	public void updateCamera() {
@@ -323,7 +355,6 @@ public class Player extends Entity {
 	
 	public void render(Graphics g) {
 		
-
 		
 		if(Game.gameState == "GAME_OVER") {
 			if (lado == 1)
@@ -333,7 +364,6 @@ public class Player extends Entity {
 			
 		}
 		else if (!isDamaged) {
-			
 			
 				if (angleXX >= 0) {
 					g.drawImage(rightPlayer[index][colorArmor],this.getX() - Camera.x,this.getY() - Camera.y, null);
@@ -371,6 +401,26 @@ public class Player extends Entity {
 				//g.fillRect(this.getX() + maskxLeft - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
 				
 			}	
+		}
+		if(reloading && lado==1) {
+			g.setColor(Color.black);
+			g.fillRect(this.getX() - Camera.x +1,this.getY() - Camera.y -6,16,4);
+			
+			
+			g.setColor(Color.gray);
+			g.fillRect(this.getX() - Camera.x +2,this.getY() - Camera.y -5,(int)((reloagindBar/reloagindMaxBar)*12),2);
+			
+			
+		}
+		if(reloading && lado==0) {
+			g.setColor(Color.black);
+			g.fillRect(this.getX() - Camera.x -1,this.getY() - Camera.y -6,16,4);
+			
+			
+			g.setColor(Color.gray);
+			g.fillRect(this.getX() - Camera.x,this.getY() - Camera.y -5,(int)((reloagindBar/reloagindMaxBar)*12),2);
+			
+			
 		}
 		if (hasGun && Game.gameState != "GAME_OVER") {
 			

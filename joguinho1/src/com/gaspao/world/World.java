@@ -87,7 +87,7 @@ public class World {
 						
 						int opcaoEscolhida = random.nextInt(numeroInimigo);
 						if(opcaoEscolhida == 0 || opcaoEscolhida == 1) {
-							Enemy en = new Enemy(xx*16,yy*16,16,16,Entity.ENEMY_EN);
+							Enemy en = new Slime(xx*16,yy*16,16,16,Entity.ENEMY_EN);
 							Game.entities.add(en);
 							Game.enemies.add(en);
 						}

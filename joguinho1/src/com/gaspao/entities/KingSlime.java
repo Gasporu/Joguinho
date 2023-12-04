@@ -1,6 +1,7 @@
 package com.gaspao.entities;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -8,7 +9,7 @@ import java.util.Random;
 import com.gaspao.main.Game;
 import com.gaspao.world.Camera;
 
-public class KingSlime extends Enemy {
+public class KingSlime extends Slime {
 
 
 	private int maskx = -36, masky = -28, maskw = 38, maskh = 38;
@@ -36,7 +37,8 @@ public class KingSlime extends Enemy {
 	private int dyingmaxFrames = 15;
 	private int dyingmaxIndex = 10;
 	
-	private int life = 100;
+	private double life = 150;
+	private double maxLife = 150;
 	
 	private int dano = 25; 
 	
@@ -73,7 +75,7 @@ public class KingSlime extends Enemy {
 	}
 	
 	public int getLife() {
-		return life;
+		return (int) life;
 	}
 	
 	public double getSpeed() {
@@ -142,6 +144,7 @@ public class KingSlime extends Enemy {
 	
 	public void render(Graphics g) {
 		
+		
 		if(!isDamaged() && dyingAnimation == false ) {
 			if (dir == right_dir) {
 				g.drawImage(spritesRightSlimeKing[index],this.getX() - Camera.x - 48,this.getY() - 48 - Camera.y, 64,64 ,null);
@@ -166,6 +169,23 @@ public class KingSlime extends Enemy {
 			tickDyingAnimation();
 		}
 	
+		g.setColor(Color.black);
+		g.fillRect(7,136,223,10);
+		
+		g.setColor(Color.red);
+		g.fillRect(8,137,221,8);
+		
+		g.setColor(Color.green);
+		g.fillRect(8,137,(int)((life/maxLife)*221) ,8);
+		
+		g.setColor(Color.black);
+		g.setFont(new Font("arial",Font.BOLD,8));
+		g.drawString((int)life+"/"+(int)maxLife,111,144);
+		
+		g.setColor(Color.white);
+		g.setFont(new Font("arial",Font.BOLD,8));
+		g.drawString((int)life+"/"+(int)maxLife,110,144);
+		
 		//g.setColor(Color.blue);
 		//g.fillRect(this.getX() + maskx - Camera.x,this.getY() + masky - Camera.y,maskw,maskh);
 		
